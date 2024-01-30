@@ -1,5 +1,5 @@
 export default [
-  { path: '/', icon: 'smile', component: './Index', name: '周边展示页' },
+  { path: '/', icon: 'smile', component: './Home', name: '周边展示页' },
   {
     path: '/user',
     layout: false,
