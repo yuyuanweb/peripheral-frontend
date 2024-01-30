@@ -1,7 +1,81 @@
 declare namespace API {
+  type ApplyRecords = {
+    adminId?: number;
+    applicantId?: number;
+    applicantUserName?: string;
+    applicationTime?: string;
+    content?: string;
+    createTime?: string;
+    id?: number;
+    isDelete?: number;
+    peripheralId?: number;
+    peripheralName?: string;
+    reason?: string;
+    status?: number;
+    updateTime?: string;
+  };
+
+  type ApplyRecordsAddRequest = {
+    adminId?: number;
+    applicantId?: number;
+    applicantUserName?: string;
+    applicationTime?: string;
+    content?: string;
+    peripheralId?: number;
+    peripheralName?: string;
+    reason?: string;
+    status?: number;
+  };
+
+  type ApplyRecordsApplyRequest = {
+    content?: string;
+    peripheralId?: number;
+  };
+
+  type ApplyRecordsApproveRequest = {
+    approved?: boolean;
+    id?: number;
+  };
+
+  type ApplyRecordsQueryRequest = {
+    adminId?: number;
+    applicantId?: number;
+    applicantUserName?: string;
+    applicationTime?: string;
+    ascSortField?: string[];
+    content?: string;
+    current?: number;
+    descSortField?: string[];
+    id?: number;
+    pageSize?: number;
+    peripheralId?: number;
+    peripheralName?: string;
+    reason?: string;
+    status?: number;
+  };
+
+  type ApplyRecordsUpdateRequest = {
+    adminId?: number;
+    applicantId?: number;
+    applicantUserName?: string;
+    applicationTime?: string;
+    content?: string;
+    id?: number;
+    peripheralId?: number;
+    peripheralName?: string;
+    reason?: string;
+    status?: number;
+  };
+
   type Base64UploadFileRequest = {
     biz?: string;
     fileBase64?: string;
+  };
+
+  type BaseResponseApplyRecords = {
+    code?: number;
+    data?: ApplyRecords;
+    message?: string;
   };
 
   type BaseResponseboolean = {
@@ -13,6 +87,18 @@ declare namespace API {
   type BaseResponseint = {
     code?: number;
     data?: number;
+    message?: string;
+  };
+
+  type BaseResponseListApplyRecords = {
+    code?: number;
+    data?: ApplyRecords[];
+    message?: string;
+  };
+
+  type BaseResponseListPeripheralInfo = {
+    code?: number;
+    data?: PeripheralInfo[];
     message?: string;
   };
 
@@ -37,6 +123,24 @@ declare namespace API {
   type BaseResponseobject = {
     code?: number;
     data?: Record<string, any>;
+    message?: string;
+  };
+
+  type BaseResponsePageApplyRecords = {
+    code?: number;
+    data?: PageApplyRecords;
+    message?: string;
+  };
+
+  type BaseResponsePagePeripheralInfo = {
+    code?: number;
+    data?: PagePeripheralInfo;
+    message?: string;
+  };
+
+  type BaseResponsePagePeripheralInfoVO = {
+    code?: number;
+    data?: PagePeripheralInfoVO;
     message?: string;
   };
 
@@ -73,6 +177,12 @@ declare namespace API {
   type BaseResponsePageUserVO = {
     code?: number;
     data?: PageUserVO;
+    message?: string;
+  };
+
+  type BaseResponsePeripheralInfo = {
+    code?: number;
+    data?: PeripheralInfo;
     message?: string;
   };
 
@@ -148,6 +258,16 @@ declare namespace API {
   type genProductSignUsingGETParams = {
     couponId?: number;
     productId?: number;
+  };
+
+  type getApplyRecordsByIdUsingGETParams = {
+    /** id */
+    id?: number;
+  };
+
+  type getPeripheralInfoByIdUsingGETParams = {
+    /** id */
+    id?: number;
   };
 
   type getPostByIdUsingGETParams = {
@@ -273,6 +393,45 @@ declare namespace API {
     column?: string;
   };
 
+  type PageApplyRecords = {
+    countId?: string;
+    current?: number;
+    maxLimit?: number;
+    optimizeCountSql?: boolean;
+    orders?: OrderItem[];
+    pages?: number;
+    records?: ApplyRecords[];
+    searchCount?: boolean;
+    size?: number;
+    total?: number;
+  };
+
+  type PagePeripheralInfo = {
+    countId?: string;
+    current?: number;
+    maxLimit?: number;
+    optimizeCountSql?: boolean;
+    orders?: OrderItem[];
+    pages?: number;
+    records?: PeripheralInfo[];
+    searchCount?: boolean;
+    size?: number;
+    total?: number;
+  };
+
+  type PagePeripheralInfoVO = {
+    countId?: string;
+    current?: number;
+    maxLimit?: number;
+    optimizeCountSql?: boolean;
+    orders?: OrderItem[];
+    pages?: number;
+    records?: PeripheralInfoVO[];
+    searchCount?: boolean;
+    size?: number;
+    total?: number;
+  };
+
   type PagePost = {
     countId?: string;
     current?: number;
@@ -349,6 +508,72 @@ declare namespace API {
     searchCount?: boolean;
     size?: number;
     total?: number;
+  };
+
+  type PeripheralInfo = {
+    cover?: string;
+    createTime?: string;
+    id?: number;
+    isDelete?: number;
+    name?: string;
+    permission?: string;
+    price?: number;
+    purchaseLink?: string;
+    replenishLink?: string;
+    status?: number;
+    stock?: number;
+    type?: string;
+    updateTime?: string;
+    userId?: number;
+  };
+
+  type PeripheralInfoAddRequest = {
+    cover?: string;
+    name?: string;
+    permission?: string;
+    price?: number;
+    purchaseLink?: string;
+    replenishLink?: string;
+    status?: number;
+    stock?: number;
+    type?: string;
+  };
+
+  type PeripheralInfoQueryRequest = {
+    ascSortField?: string[];
+    current?: number;
+    descSortField?: string[];
+    id?: number;
+    name?: string;
+    pageSize?: number;
+    price?: number;
+    status?: number;
+    stock?: number;
+    type?: string;
+    userId?: number;
+  };
+
+  type PeripheralInfoUpdateRequest = {
+    cover?: string;
+    id?: number;
+    name?: string;
+    permission?: string;
+    price?: number;
+    purchaseLink?: string;
+    replenishLink?: string;
+    status?: number;
+    stock?: number;
+    type?: string;
+  };
+
+  type PeripheralInfoVO = {
+    cover?: string;
+    id?: number;
+    name?: string;
+    price?: number;
+    purchaseLink?: string;
+    stock?: number;
+    type?: string;
   };
 
   type Post = {

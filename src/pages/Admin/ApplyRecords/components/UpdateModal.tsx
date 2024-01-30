@@ -1,14 +1,14 @@
-import { updateUserUsingPost } from '@/services/backend/userController';
+import { updateApplyRecordsUsingPost } from '@/services/backend/applyRecordsController';
 import { ProColumns, ProTable } from '@ant-design/pro-components';
 import '@umijs/max';
 import { message, Modal } from 'antd';
 import React from 'react';
 
 interface Props {
-  oldData?: API.User;
+  oldData?: API.ApplyRecords;
   visible: boolean;
-  columns: ProColumns<API.User>[];
-  onSubmit: (values: API.UserUpdateRequest) => void;
+  columns: ProColumns<API.ApplyRecords>[];
+  onSubmit: (values: API.ApplyRecordsUpdateRequest) => void;
   onCancel: () => void;
 }
 
@@ -17,10 +17,10 @@ interface Props {
  *
  * @param fields
  */
-const handleUpdate = async (fields: API.UserUpdateRequest) => {
+const handleUpdate = async (fields: API.ApplyRecordsUpdateRequest) => {
   const hide = message.loading('正在更新');
   try {
-    await updateUserUsingPost(fields);
+    await updateApplyRecordsUsingPost(fields);
     hide();
     message.success('更新成功');
     return true;
@@ -59,7 +59,7 @@ const UpdateModal: React.FC<Props> = (props) => {
         form={{
           initialValues: oldData,
         }}
-        onSubmit={async (values: API.UserUpdateRequest) => {
+        onSubmit={async (values: API.ApplyRecordsUpdateRequest) => {
           const success = await handleUpdate({
             ...values,
             id: oldData.id as any,
