@@ -1,8 +1,7 @@
 import { applyApplyRecordsUsingPost } from '@/services/backend/applyRecordsController';
 import { listPeripheralInfoVoByPageUsingPost } from '@/services/backend/peripheralInfoController';
-import { PageContainer } from '@ant-design/pro-components';
 import { useModel } from '@umijs/max';
-import { Avatar, Button, Card, Divider, Form, Input, List, message, Modal } from 'antd';
+import { Form, Input, message, Modal, Pagination, Skeleton } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { buttonNames } from './constants';
 import './index.less';
@@ -18,9 +17,10 @@ const Home: React.FC = () => {
   // 当前点击tab
   const [curTab, setCurTab] = useState(0);
   const [open, setOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState(null);
+  const [selectedId, setSelectedId] = useState(0);
   // const [applyStatusMap, setApplyStatusMap] = useState({});
   const { initialState } = useModel('@@initialState');
+  const [form] = Form.useForm();
 
   const handleApplyClick = (id: any) => {
     setSelectedId(id);
@@ -30,17 +30,8 @@ const Home: React.FC = () => {
   function changeTab(index: number) {
     setCurTab(index);
   }
-  // const actionRef = useRef<ActionType>();
-
-  //返回id对应的status
-  // const getStatus = (id: any) => {
-  //   const status = applyStatusMap[id];
-  //   return status;
-  // };
 
   const handleApply = async (content: any) => {
-    console.log(content);
-
     const hide = message.loading('正在申请');
     try {
       await applyApplyRecordsUsingPost({
@@ -50,16 +41,8 @@ const Home: React.FC = () => {
       hide();
       message.success('申请成功');
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      loadData();
+      // loadData();
       setOpen(false);
-      // 设置延迟时间（单位：毫秒）
-      // const delayTime = 500; //
-
-      // // 在延迟时间后执行刷新操作
-      // setTimeout(() => {
-      //   window.location.reload();
-      // }, delayTime);
-
       return true;
     } catch (error: any) {
       hide();
@@ -69,7 +52,7 @@ const Home: React.FC = () => {
   };
 
   // 定义异步加载数据的函数
-  const loadData = async (current = 1, pageSize = 5) => {
+  const loadData = async (current = 1, pageSize = 10) => {
     // 开始加载数据，设置 loading 状态为 true
     console.log('正在加载数据');
     setLoading(true);
@@ -84,16 +67,6 @@ const Home: React.FC = () => {
       setList(res?.data?.records ?? []);
       // 将请求返回的总数设置到总数状态中
       setTotal(res?.data?.total ?? 0);
-      // 获取申请状态信息
-
-      // const peripheralIds = res?.data?.records.map((item) => item.id) || [];
-      // if (initialState?.currentUser?.userRole === 'internal') {
-      //   const applyStatusRes = await getAllStatusUsingPost({ ids: peripheralIds });
-      //   console.log(applyStatusRes);
-
-      //   setApplyStatusMap(applyStatusRes?.data || {});
-      // }
-
       // 捕获请求失败的错误信息
     } catch (error: any) {
       // 请求失败时提示错误信息
@@ -103,154 +76,113 @@ const Home: React.FC = () => {
     setLoading(false);
   };
 
+  function confirm() {
+    const content = form.getFieldValue('content');
+    setOpen(false);
+    if (!content) {
+      message.error('请输入审批意见');
+      return;
+    }
+    handleApply(content);
+  }
+
   useEffect(() => {
     // 当curTab发生变化时，才重新执行加载数据的函数
     loadData();
   }, [curTab]);
 
-  function renderAction(id: number) {
-    // const status = getStatus(id);
-    // switch (status) {
-    //   case 1:
-    //     return <div key={'list-loadmore-applied'}>已申请</div>;
-    //   case 2:
-    //     return <div key={'list-loadmore-approved'}>通过申请</div>;
-    //   case 3:
-    //     return (
-    //       <a
-    //         key={'list-loadmore-reapply'}
-    //         onClick={() => handleApplyClick(id)}
-    //         style={{ color: 'red' }}
-    //       >
-    //         重新申请
-    //       </a>
-    //     );
-    //   default:
-    //     return (
-    //       <a key={'list-loadmore-apply'} onClick={() => handleApplyClick(id)}>
-    //         申请周边
-    //       </a>
-    //     );
-    // }
-    return (
-      <a key={'list-loadmore-apply'} onClick={() => handleApplyClick(id)}>
-        申请周边
-      </a>
-    );
-  }
-
   return (
-    <PageContainer className="page" title="周边展示页面">
-      <Card className="peripheral-tab" bordered={false} style={{ background: 'transparent' }}>
-        {/* 循环渲染按钮 */}
-        {buttonNames.map((buttonName, index) => (
-          <Button
-            type={index === curTab ? 'primary' : 'default'}
-            key={index}
-            style={{ marginTop: 12, marginRight: 24 }}
-            onClick={() => changeTab(index)}
-          >
-            {buttonName}
-          </Button>
-        ))}
-      </Card>
-      <Divider />
-      <List
-        className="my-list"
-        // 设置 loading 属性，表示数据是否正在加载中
-        loading={loading}
-        style={{ maxWidth: '1200px', margin: '0 auto' }} // 让整个 List 居中
-        itemLayout="horizontal"
-        // 将列表数据作为数据源传递给 List 组件
-        dataSource={list}
-        // 渲染每个列表项
-        renderItem={(item) => (
-          <List.Item
-            // style={{ backgroundColor: '#64d6ea' }}
-            actions={[
-              <a
-                style={{ fontSize: 16 }}
-                className="buy-link"
-                key={'list-loadmore-edit'}
-                href={item.purchaseLink}
-                target="_blank"
-                rel="noopener noreferrer"
+    <div className="page" title="周边展示页面">
+      <div className=" bg-white p-5 rounded-md">
+        <div className="flex gap-5 flex-wrap">
+          {buttonNames.map((buttonName, index) => (
+            <div
+              onClick={() => changeTab(index)}
+              key={index}
+              className={`border-[1px] px-5 py-2 border-solid hover:opacity-80 cursor-pointer border-gray-200  text-center ${
+                curTab === index ? 'bg-blue-500 text-white' : ''
+              }`}
+            >
+              {buttonName}
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* 渲染内容 */}
+      <div className="grid py-5 gap-3 grid-cols-2 lg:grid-cols-4 md:grid-cols-3 xl:grid-cols-5 mt-5">
+        {loading
+          ? new Array(8)
+              .fill(1)
+              .map((_, index) => (
+                <Skeleton className=" bg-white p-5 rounded-xl" active key={index} />
+              ))
+          : list.map((item) => (
+              <div
+                key={item.id}
+                className="shadow-md m-2 bg-white rounded-md overflow-hidden flex flex-col"
               >
-                查看购买链接
-              </a>,
-              initialState?.currentUser &&
-                initialState.currentUser.userRole === 'internal' &&
-                renderAction(item.id),
-            ]}
-            className="peripheral-item"
-          >
-            <List.Item.Meta
-              style={{ margin: '10px 20px', textAlign: 'center' }}
-              title={<div style={{ fontSize: 20, color: 'violet' }}>{item.name}</div>}
-              avatar={<Avatar src={item.cover} size={168} shape="square" />}
-              description={
-                <div style={{ fontSize: 16, color: 'blue' }}>
-                  {item.stock !== null && (
-                    <p style={{ marginBottom: 8 }}>库存为：{item.stock} 件</p>
-                  )}
-                  {item.price !== null && (
-                    <p style={{ marginBottom: 8 }}>价格为：{(item.price || 0) / 100} 元</p>
-                  )}
-                  <p style={{ marginBottom: 0 }}>所属分类：{item.type}</p>
+                <img
+                  draggable="false"
+                  src={item.cover}
+                  alt={item.name}
+                  className="hover:opacity-80 cursor-pointer w-full flex-1 object-cover max-h-80"
+                />
+                <div className="desc w-full flex-1 flex flex-col gap-3 h-28 justify-between">
+                  <div className="flex justify-between items-baseline w-full pt-4 pb-1 px-2">
+                    <div>
+                      <p>{item.name}</p>
+                      {item.stock && (
+                        <span className="text-gray-400 text-sm">剩余库存：{item.stock || 12}</span>
+                      )}
+                    </div>
+                    <p className="price text-red-500 text-xl">
+                      {item.price !== null && '¥' + item.price}
+                    </p>
+                  </div>
+                  {initialState?.currentUser &&
+                    initialState.currentUser.userRole === 'internal' && (
+                      <button
+                        onClick={() => handleApplyClick(item.id)}
+                        type="button"
+                        className=" p-2 bg-blue-500 border-none cursor-pointer rounded-sm hover:opacity-80 text-white w-full"
+                      >
+                        申请周边
+                      </button>
+                    )}
                 </div>
-              }
-              className="peripheral-item-meta"
-            />
-          </List.Item>
-        )}
-        // 分页配置
-        pagination={{
-          // 自定义显示总数
-          showTotal(total: number) {
-            return '总数：' + total;
-          },
-          // 每页显示条数
-          pageSize: 5,
-          // 总数，从状态中获取
-          total,
-          // 切换页面触发的回调函数
-          onChange(page, pageSize) {
-            // 加载对应页面的数据
-            loadData(page, pageSize);
-          },
-        }}
-      />
+              </div>
+            ))}
+      </div>
+      <div className="page py-5">
+        <Pagination total={total} onChange={(page, pageSize) => loadData(page, pageSize)} />
+      </div>
+      {/* 模态框申请 */}
       <Modal
-        title="Modal"
+        title="周边申请"
         open={open}
-        onOk={() => setOpen(false)}
+        onOk={() => confirm()}
         onCancel={() => setOpen(false)}
         okText="确认"
         cancelText="取消"
       >
         <Form
           name="basic"
+          form={form}
           style={{ maxWidth: 600 }}
           initialValues={{ remember: true }}
           onFinish={(values) => handleApply(values.content)}
           autoComplete="off"
         >
           <Form.Item
-            label="申请内容"
+            label="申请理由"
             name="content"
             rules={[{ required: true, message: '请填写申请内容' }]}
           >
             <Input.TextArea />
           </Form.Item>
-
-          <Form.Item wrapperCol={{ offset: 4, span: 16 }}>
-            <Button type="primary" htmlType="submit">
-              提交申请
-            </Button>
-          </Form.Item>
         </Form>
       </Modal>
-    </PageContainer>
+    </div>
   );
 };
 

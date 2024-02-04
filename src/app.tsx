@@ -3,6 +3,7 @@ import { getLoginUserUsingGet } from '@/services/backend/userController';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
+import './assets/css/global.css';
 import { AvatarDropdown } from './components/RightContent/AvatarDropdown';
 import { requestConfig } from './requestConfig';
 
