@@ -67,6 +67,10 @@ declare namespace API {
     status?: number;
   };
 
+  type ApplyStatusRequest = {
+    ids?: number[];
+  };
+
   type Base64UploadFileRequest = {
     biz?: string;
     fileBase64?: string;
@@ -117,6 +121,12 @@ declare namespace API {
   type BaseResponselong = {
     code?: number;
     data?: number;
+    message?: string;
+  };
+
+  type BaseResponseMaplong = {
+    code?: number;
+    data?: Record<string, any>;
     message?: string;
   };
 
@@ -285,9 +295,31 @@ declare namespace API {
     id?: number;
   };
 
+  type getQueryWrapperUsingGETParams = {
+    adminId?: number;
+    applicantId?: number;
+    applicantUserName?: string;
+    applicationTime?: string;
+    ascSortField?: string[];
+    content?: string;
+    current?: number;
+    descSortField?: string[];
+    id?: number;
+    pageSize?: number;
+    peripheralId?: number;
+    peripheralName?: string;
+    reason?: string;
+    status?: number;
+  };
+
   type getSignUsingGETParams = {
     /** url */
     url?: string;
+  };
+
+  type getStatusUsingGETParams = {
+    /** id */
+    id?: number;
   };
 
   type getUserByIdUsingGETParams = {
@@ -300,6 +332,10 @@ declare namespace API {
     id?: number;
   };
 
+  type ISqlSegment = {
+    sqlSegment?: string;
+  };
+
   type LoginUserVO = {
     createTime?: string;
     id?: number;
@@ -308,6 +344,14 @@ declare namespace API {
     userName?: string;
     userProfile?: string;
     userRole?: string;
+  };
+
+  type MergeSegments = {
+    groupBy?: ISqlSegment[];
+    having?: ISqlSegment[];
+    normal?: ISqlSegment[];
+    orderBy?: ISqlSegment[];
+    sqlSegment?: string;
   };
 
   type ModelAndView = {
@@ -772,6 +816,24 @@ declare namespace API {
     status?: number;
     type?: string;
     userId?: number;
+  };
+
+  type QueryWrapperApplyRecords = {
+    customSqlSegment?: string;
+    emptyOfEntity?: boolean;
+    emptyOfNormal?: boolean;
+    emptyOfWhere?: boolean;
+    entity?: ApplyRecords;
+    expression?: MergeSegments;
+    paramAlias?: string;
+    paramNameValuePairs?: Record<string, any>;
+    sqlComment?: string;
+    sqlFirst?: string;
+    sqlSegment?: string;
+    sqlSelect?: string;
+    sqlSet?: string;
+    targetSql?: string;
+    useAnnotationOrderBy?: boolean;
   };
 
   type uploadFileUsingPOSTParams = {

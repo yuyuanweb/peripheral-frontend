@@ -20,7 +20,17 @@ interface Props {
 const handleUpdate = async (fields: API.PeripheralInfoUpdateRequest) => {
   const hide = message.loading('正在更新');
   try {
-    await updatePeripheralInfoUsingPost(fields);
+    // 处理 JSON 数据
+    const formattedFields = {
+      ...fields,
+      permission: JSON.stringify({
+        publicView: fields.permission.publicView || false,
+        sensitiveFields: fields.permission.sensitiveFields || [],
+      }),
+    };
+    console.log(formattedFields.permission, '权限');
+
+    await updatePeripheralInfoUsingPost(formattedFields);
     hide();
     message.success('更新成功');
     return true;

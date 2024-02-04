@@ -18,7 +18,18 @@ interface Props {
 const handleAdd = async (fields: API.PeripheralInfoAddRequest) => {
   const hide = message.loading('正在添加');
   try {
-    await addPeripheralInfoUsingPost(fields);
+    // 处理 JSON 数据
+    const formattedFields = {
+      ...fields,
+      permission: fields.permission
+        ? JSON.stringify({
+            publicView: fields.permission.publicView,
+            sensitiveFields: fields.permission.sensitiveFields,
+          })
+        : null,
+    };
+
+    await addPeripheralInfoUsingPost(formattedFields);
     hide();
     message.success('创建成功');
     return true;

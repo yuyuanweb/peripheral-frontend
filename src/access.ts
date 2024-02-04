@@ -6,5 +6,6 @@ export default function access(initialState: { currentUser?: API.LoginUserVO } |
   return {
     canUser: currentUser,
     canAdmin: currentUser && currentUser.userRole === 'admin',
+    canInternal: currentUser && currentUser.userRole === 'internal',
   };
 }

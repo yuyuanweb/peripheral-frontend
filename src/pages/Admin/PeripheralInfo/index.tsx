@@ -6,7 +6,13 @@ import {
 } from '@/services/backend/peripheralInfoController';
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
-import { PageContainer, ProTable } from '@ant-design/pro-components';
+import {
+  PageContainer,
+  ProForm,
+  ProFormCheckbox,
+  ProFormSwitch,
+  ProTable,
+} from '@ant-design/pro-components';
 import '@umijs/max';
 import { Button, message, Select, Space, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
@@ -74,7 +80,7 @@ const UserAdminPage: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '价格',
+      title: '价格(分）',
       dataIndex: 'price',
       valueType: 'text',
     },
@@ -87,16 +93,48 @@ const UserAdminPage: React.FC = () => {
       title: '所属分类',
       dataIndex: 'type',
       valueType: 'text',
+      width: 100,
+    },
+    {
+      title: '购买链接',
+      dataIndex: 'purchaseLink',
+      valueType: 'text',
+      width: 60,
+      hideInSearch: true,
     },
     {
       title: '进货链接',
       dataIndex: 'replenishLink',
       valueType: 'text',
+      width: 60,
+      hideInSearch: true,
     },
     {
       title: '权限',
       dataIndex: 'permission',
       valueType: 'jsonCode',
+      hideInSearch: true,
+      renderFormItem: (_, record) => {
+        console.log(record, _, 'permission');
+        return (
+          <ProForm.Group>
+            <ProFormSwitch
+              name={['permission', 'publicView']}
+              label="是否启用敏感字段限制"
+              checkedChildren="启用"
+              unCheckedChildren="关闭"
+            />
+            <ProFormCheckbox.Group
+              name={['permission', 'sensitiveFields']}
+              label="选择敏感字段"
+              options={[
+                { label: '价格', value: 'price' },
+                { label: '库存', value: 'stock' },
+              ]}
+            />
+          </ProForm.Group>
+        );
+      },
     },
     {
       title: '是否公开',

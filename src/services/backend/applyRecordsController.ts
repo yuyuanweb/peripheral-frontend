@@ -77,6 +77,59 @@ export async function getApplyRecordsByIdUsingGet(
   });
 }
 
+/** getAllStatus POST /api/applyRecords/getAllStatus */
+export async function getAllStatusUsingPost(
+  body: API.ApplyStatusRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseMaplong>('/api/applyRecords/getAllStatus', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** getApplyRecords GET /api/applyRecords/getApplyRecords */
+export async function getApplyRecordsUsingGet(options?: { [key: string]: any }) {
+  return request<API.BaseResponseListApplyRecords>('/api/applyRecords/getApplyRecords', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
+/** getQueryWrapper GET /api/applyRecords/getExternalApplyRecords */
+export async function getQueryWrapperUsingGet(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.getQueryWrapperUsingGETParams,
+  options?: { [key: string]: any },
+) {
+  return request<API.QueryWrapperApplyRecords>('/api/applyRecords/getExternalApplyRecords', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  });
+}
+
+/** getStatus GET /api/applyRecords/getStatus */
+export async function getStatusUsingGet(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.getStatusUsingGETParams,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseint>('/api/applyRecords/getStatus', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  });
+}
+
 /** listApplyRecords POST /api/applyRecords/list */
 export async function listApplyRecordsUsingPost(
   body: API.ApplyRecordsQueryRequest,

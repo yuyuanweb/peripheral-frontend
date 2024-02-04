@@ -89,6 +89,9 @@ const UserAdminPage: React.FC = () => {
         admin: {
           text: '管理员',
         },
+        internal: {
+          text: '内部员工',
+        },
       },
     },
     {

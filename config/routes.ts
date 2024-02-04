@@ -10,6 +10,14 @@ export default [
   },
 
   {
+    path: '/internal/show',
+    name: '查看申请记录',
+    access: 'canInternal',
+    icon: 'smile',
+    component: './Internal',
+  },
+
+  {
     path: '/admin',
     icon: 'crown',
     name: '管理页',
