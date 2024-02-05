@@ -52,7 +52,7 @@ const Home: React.FC = () => {
   };
 
   // 定义异步加载数据的函数
-  const loadData = async (current = 1, pageSize = 10) => {
+  const loadData = async (current = 1, pageSize = 12) => {
     // 开始加载数据，设置 loading 状态为 true
     console.log('正在加载数据');
     setLoading(true);
@@ -109,7 +109,7 @@ const Home: React.FC = () => {
         </div>
       </div>
       {/* 渲染内容 */}
-      <div className="grid py-5 gap-3 grid-cols-2 lg:grid-cols-4 md:grid-cols-3 xl:grid-cols-5 mt-5">
+      <div className="grid py-5 gap-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 mt-2">
         {loading
           ? new Array(8)
               .fill(1)
@@ -117,36 +117,39 @@ const Home: React.FC = () => {
                 <Skeleton className=" bg-white p-5 rounded-xl" active key={index} />
               ))
           : list.map((item) => (
-              <div
-                key={item.id}
-                className="shadow-md m-2 bg-white rounded-md overflow-hidden flex flex-col"
-              >
+              <div key={item.id} className="shadow-md m-2 bg-white rounded-md overflow-hidden flex">
                 <img
                   draggable="false"
                   src={item.cover}
                   alt={item.name}
-                  className="hover:opacity-80 cursor-pointer w-full flex-1 object-cover max-h-80"
+                  style={{ borderRight: '1px solid #eee' }}
+                  className="hover:opacity-80 cursor-pointer w-44 h-44 xl:w-52 xl:h-52 object-cover"
                 />
-                <div className="desc w-full flex-1 flex flex-col gap-3 h-28 justify-between">
-                  <div className="flex justify-between items-baseline w-full pt-4 pb-1 px-2">
-                    <div>
-                      <p>{item.name}</p>
-                      {item.stock && (
-                        <span className="text-gray-400 text-sm">剩余库存：{item.stock || 12}</span>
-                      )}
-                    </div>
-                    <p className="price text-red-500 text-xl">
-                      {item.price !== null && '¥' + item.price}
-                    </p>
+                <div className="desc w-full flex-1 flex flex-col justify-between">
+                  <div className="flex justify-between flex-col p-3">
+                    <p>{item.name}</p>
+                    {item.price !== null && (
+                      <p className="price ">
+                        {/* <span className="text-gray-400 text-sm">周边价格：</span>{' '} */}
+                        <span className="text-lg text-red-500">{'¥' + item.price}</span>
+                      </p>
+                    )}
+                    {item.stock ? (
+                      <p className="text-gray-400 text-[13px]">剩余库存：{item.stock} 件</p>
+                    ) : (
+                      ''
+                    )}
                   </div>
                   {initialState?.currentUser &&
                     initialState.currentUser.userRole === 'internal' && (
                       <button
                         onClick={() => handleApplyClick(item.id)}
                         type="button"
-                        className=" p-2 bg-blue-500 border-none cursor-pointer rounded-sm hover:opacity-80 text-white w-full"
+                        className={`p-2 select-none border-none cursor-pointer hover:opacity-80 text-white w-full ${
+                          item.stock === 0 ? 'bg-gray-500 pointer-events-none' : 'bg-blue-500'
+                        }`}
                       >
-                        申请周边
+                        {item.stock === 0 ? '当前周边库存为空' : '申请周边'}
                       </button>
                     )}
                 </div>
@@ -154,7 +157,11 @@ const Home: React.FC = () => {
             ))}
       </div>
       <div className="page py-5">
-        <Pagination total={total} onChange={(page, pageSize) => loadData(page, pageSize)} />
+        <Pagination
+          total={total}
+          pageSize={12}
+          onChange={(page, pageSize) => loadData(page, pageSize)}
+        />
       </div>
       {/* 模态框申请 */}
       <Modal
