@@ -100,21 +100,6 @@ export async function getApplyRecordsUsingGet(options?: { [key: string]: any }) 
   });
 }
 
-/** getQueryWrapper GET /api/applyRecords/getExternalApplyRecords */
-export async function getQueryWrapperUsingGet(
-  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.getQueryWrapperUsingGETParams,
-  options?: { [key: string]: any },
-) {
-  return request<API.QueryWrapperApplyRecords>('/api/applyRecords/getExternalApplyRecords', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-    ...(options || {}),
-  });
-}
-
 /** getStatus GET /api/applyRecords/getStatus */
 export async function getStatusUsingGet(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)

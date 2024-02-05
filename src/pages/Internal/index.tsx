@@ -34,6 +34,11 @@ const InternalPage: React.FC = () => {
       valueType: 'textarea',
     },
     {
+      title: '审核反馈',
+      dataIndex: 'reason',
+      valueType: 'textarea',
+    },
+    {
       title: '申请时间',
       dataIndex: 'applicationTime',
       valueType: 'dateTime',

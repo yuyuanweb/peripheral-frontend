@@ -24,8 +24,8 @@ const handleUpdate = async (fields: API.PeripheralInfoUpdateRequest) => {
     const formattedFields = {
       ...fields,
       permission: JSON.stringify({
-        publicView: fields.permission.publicView || false,
-        sensitiveFields: fields.permission.sensitiveFields || [],
+        publicView: fields.permission?.publicView || false,
+        sensitiveFields: fields.permission?.sensitiveFields || [],
       }),
     };
     console.log(formattedFields.permission, '权限');

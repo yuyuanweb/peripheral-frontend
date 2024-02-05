@@ -35,6 +35,7 @@ declare namespace API {
   type ApplyRecordsApproveRequest = {
     approved?: boolean;
     id?: number;
+    reason?: string;
   };
 
   type ApplyRecordsQueryRequest = {
@@ -295,23 +296,6 @@ declare namespace API {
     id?: number;
   };
 
-  type getQueryWrapperUsingGETParams = {
-    adminId?: number;
-    applicantId?: number;
-    applicantUserName?: string;
-    applicationTime?: string;
-    ascSortField?: string[];
-    content?: string;
-    current?: number;
-    descSortField?: string[];
-    id?: number;
-    pageSize?: number;
-    peripheralId?: number;
-    peripheralName?: string;
-    reason?: string;
-    status?: number;
-  };
-
   type getSignUsingGETParams = {
     /** url */
     url?: string;
@@ -332,10 +316,6 @@ declare namespace API {
     id?: number;
   };
 
-  type ISqlSegment = {
-    sqlSegment?: string;
-  };
-
   type LoginUserVO = {
     createTime?: string;
     id?: number;
@@ -344,14 +324,6 @@ declare namespace API {
     userName?: string;
     userProfile?: string;
     userRole?: string;
-  };
-
-  type MergeSegments = {
-    groupBy?: ISqlSegment[];
-    having?: ISqlSegment[];
-    normal?: ISqlSegment[];
-    orderBy?: ISqlSegment[];
-    sqlSegment?: string;
   };
 
   type ModelAndView = {
@@ -818,24 +790,6 @@ declare namespace API {
     userId?: number;
   };
 
-  type QueryWrapperApplyRecords = {
-    customSqlSegment?: string;
-    emptyOfEntity?: boolean;
-    emptyOfNormal?: boolean;
-    emptyOfWhere?: boolean;
-    entity?: ApplyRecords;
-    expression?: MergeSegments;
-    paramAlias?: string;
-    paramNameValuePairs?: Record<string, any>;
-    sqlComment?: string;
-    sqlFirst?: string;
-    sqlSegment?: string;
-    sqlSelect?: string;
-    sqlSet?: string;
-    targetSql?: string;
-    useAnnotationOrderBy?: boolean;
-  };
-
   type uploadFileUsingPOSTParams = {
     biz?: string;
   };
@@ -906,6 +860,7 @@ declare namespace API {
     mpOpenId?: string;
     pageSize?: number;
     unionId?: string;
+    userAccount?: string;
     userName?: string;
     userProfile?: string;
     userRole?: string;

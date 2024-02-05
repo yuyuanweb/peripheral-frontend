@@ -41,7 +41,7 @@ const Home: React.FC = () => {
       hide();
       message.success('申请成功');
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      // loadData();
+      loadData();
       setOpen(false);
       return true;
     } catch (error: any) {
@@ -136,11 +136,12 @@ const Home: React.FC = () => {
                       )}
                     </div>
                     <p className="price text-red-500 text-xl">
-                      {item.price !== null && '¥' + item.price}
+                      {item.price !== null && '¥' + item.price / 100}
                     </p>
                   </div>
                   {initialState?.currentUser &&
-                    initialState.currentUser.userRole === 'internal' && (
+                    (initialState.currentUser.userRole === 'internal' ||
+                      initialState.currentUser.userRole === 'admin') && (
                       <button
                         onClick={() => handleApplyClick(item.id)}
                         type="button"
