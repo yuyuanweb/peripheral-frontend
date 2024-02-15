@@ -28,7 +28,7 @@ const handleUpdate = async (fields: API.PeripheralInfoUpdateRequest) => {
         sensitiveFields: fields.permission?.sensitiveFields || [],
       }),
     };
-    console.log(formattedFields.permission, '权限');
+    // console.log(formattedFields.permission, '权限');
 
     await updatePeripheralInfoUsingPost(formattedFields);
     hide();

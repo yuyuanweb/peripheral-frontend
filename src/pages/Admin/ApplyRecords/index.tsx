@@ -100,6 +100,12 @@ const UserAdminPage: React.FC = () => {
     console.log(id);
   };
 
+  const handleApplyClick1 = (id: any) => {
+    setOpen1(true);
+    setSelectedId(id);
+    console.log(id);
+  };
+
   function confirm() {
     const reason = form.getFieldValue('reason');
     setOpen(false);
@@ -158,11 +164,16 @@ const UserAdminPage: React.FC = () => {
     },
     {
       title: '申请时间',
-      sorter: true,
       dataIndex: 'applicationTime',
       valueType: 'dateTime',
       hideInSearch: true,
       hideInForm: true,
+      sorter: (a, b) => {
+        let aTime = new Date(a.applicationTime).getTime();
+        let bTime = new Date(b.applicationTime).getTime();
+        console.log('a', a);
+        return aTime - bTime;
+      },
     },
     {
       title: '申请状态',
@@ -245,7 +256,7 @@ const UserAdminPage: React.FC = () => {
               onClick={() => {
                 // 处理审批不通过操作
                 // handleNotApproval(record);
-                handleApplyClick(record.id);
+                handleApplyClick1(record.id);
               }}
             >
               不通过
@@ -276,15 +287,20 @@ const UserAdminPage: React.FC = () => {
           </Button>,
         ]}
         request={async (params, sort, filter) => {
-          const sortField = Object.keys(sort)?.[0];
+          let sortField = Object.keys(sort)?.[0];
           const sortOrder = sort?.[sortField] ?? undefined;
+          if (sortOrder === 'descend') {
+            sortField = 'descSortField'; // 使用 descSortField
+          } else {
+            sortField = 'ascSortField'; // 使用 ascSortField
+          }
 
           const { data, code } = await listApplyRecordsByPageUsingPost({
             ...params,
             sortField,
-            sortOrder,
+            // sortOrder,
             ...filter,
-          } as API.UserQueryRequest);
+          } as API.ApplyRecordsQueryRequest);
 
           return {
             success: code === 0,

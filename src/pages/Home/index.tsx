@@ -1,9 +1,12 @@
 import { applyApplyRecordsUsingPost } from '@/services/backend/applyRecordsController';
-import { listPeripheralInfoVoByPageUsingPost } from '@/services/backend/peripheralInfoController';
+import {
+  listPeripheralInfoTypeUsingGet,
+  listPeripheralInfoVoByPageUsingPost,
+} from '@/services/backend/peripheralInfoController';
 import { useModel } from '@umijs/max';
-import { Form, Input, message, Modal, Pagination, Skeleton } from 'antd';
+import { Form, Input, InputNumber, message, Modal, Pagination, Skeleton } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { buttonNames } from './constants';
+import { initialButtonNames } from './constants';
 import './index.less';
 
 const Home: React.FC = () => {
@@ -22,6 +25,8 @@ const Home: React.FC = () => {
   const { initialState } = useModel('@@initialState');
   const [form] = Form.useForm();
 
+  const [buttonNames, setButtonNames] = useState(initialButtonNames);
+
   const handleApplyClick = (id: any) => {
     setSelectedId(id);
     setOpen(true);
@@ -31,18 +36,21 @@ const Home: React.FC = () => {
     setCurTab(index);
   }
 
-  const handleApply = async (content: any) => {
+  const handleApply = async (content: any, applyNums: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-redeclare
     const hide = message.loading('正在申请');
     try {
       await applyApplyRecordsUsingPost({
         peripheralId: selectedId,
         content: content,
+        applyNums: applyNums,
       });
       hide();
       message.success('申请成功');
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
       loadData();
       setOpen(false);
+      form.resetFields();
       return true;
     } catch (error: any) {
       hide();
@@ -52,11 +60,18 @@ const Home: React.FC = () => {
   };
 
   // 定义异步加载数据的函数
-  const loadData = async (current = 1, pageSize = 10) => {
+  const loadData = async (current = 1, pageSize = 12) => {
     // 开始加载数据，设置 loading 状态为 true
     console.log('正在加载数据');
     setLoading(true);
     try {
+      // 调用接口获取按钮名称数据(type)
+      const buttonNamesResponse = await listPeripheralInfoTypeUsingGet();
+      const fetchedButtonNames = buttonNamesResponse?.data || [];
+
+      // 更新按钮名称列表状态
+      setButtonNames(fetchedButtonNames);
+
       // 调用接口获取数据
       const res = await listPeripheralInfoVoByPageUsingPost({
         current,
@@ -78,12 +93,13 @@ const Home: React.FC = () => {
 
   function confirm() {
     const content = form.getFieldValue('content');
+    const applyNums = form.getFieldValue('applyNums');
     setOpen(false);
     if (!content) {
       message.error('请输入审批意见');
       return;
     }
-    handleApply(content);
+    handleApply(content, applyNums);
   }
 
   useEffect(() => {
@@ -109,7 +125,7 @@ const Home: React.FC = () => {
         </div>
       </div>
       {/* 渲染内容 */}
-      <div className="grid py-5 gap-3 grid-cols-2 lg:grid-cols-4 md:grid-cols-3 xl:grid-cols-5 mt-5">
+      <div className="grid py-5 gap-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 mt-2">
         {loading
           ? new Array(8)
               .fill(1)
@@ -117,27 +133,28 @@ const Home: React.FC = () => {
                 <Skeleton className=" bg-white p-5 rounded-xl" active key={index} />
               ))
           : list.map((item) => (
-              <div
-                key={item.id}
-                className="shadow-md m-2 bg-white rounded-md overflow-hidden flex flex-col"
-              >
+              <div key={item.id} className="shadow-md m-2 bg-white rounded-md overflow-hidden flex">
                 <img
                   draggable="false"
                   src={item.cover}
                   alt={item.name}
-                  className="hover:opacity-80 cursor-pointer w-full flex-1 object-cover max-h-80"
+                  style={{ borderRight: '1px solid #eee' }}
+                  className="hover:opacity-80 cursor-pointer w-44 h-44 xl:w-52 xl:h-52 object-cover"
                 />
-                <div className="desc w-full flex-1 flex flex-col gap-3 h-28 justify-between">
-                  <div className="flex justify-between items-baseline w-full pt-4 pb-1 px-2">
-                    <div>
-                      <p>{item.name}</p>
-                      {item.stock && (
-                        <span className="text-gray-400 text-sm">剩余库存：{item.stock || 12}</span>
-                      )}
-                    </div>
-                    <p className="price text-red-500 text-xl">
-                      {item.price !== null && '¥' + item.price / 100}
-                    </p>
+                <div className="desc w-full flex-1 flex flex-col justify-between">
+                  <div className="flex justify-between flex-col p-3">
+                    <p>{item.name}</p>
+                    {item.price !== null && (
+                      <p className="price ">
+                        {/* <span className="text-gray-400 text-sm">周边价格：</span>{' '} */}
+                        <span className="text-lg text-red-500">{'¥' + item.price / 100}</span>
+                      </p>
+                    )}
+                    {item.stock ? (
+                      <p className="text-gray-400 text-[13px]">剩余库存：{item.stock} 件</p>
+                    ) : (
+                      ''
+                    )}
                   </div>
                   {initialState?.currentUser &&
                     (initialState.currentUser.userRole === 'internal' ||
@@ -145,9 +162,11 @@ const Home: React.FC = () => {
                       <button
                         onClick={() => handleApplyClick(item.id)}
                         type="button"
-                        className=" p-2 bg-blue-500 border-none cursor-pointer rounded-sm hover:opacity-80 text-white w-full"
+                        className={`p-2 select-none border-none cursor-pointer hover:opacity-80 text-white w-full ${
+                          item.stock === 0 ? 'bg-gray-500 pointer-events-none' : 'bg-blue-500'
+                        }`}
                       >
-                        申请周边
+                        {item.stock === 0 ? '当前周边库存为空' : '申请周边'}
                       </button>
                     )}
                 </div>
@@ -155,14 +174,21 @@ const Home: React.FC = () => {
             ))}
       </div>
       <div className="page py-5">
-        <Pagination total={total} onChange={(page, pageSize) => loadData(page, pageSize)} />
+        <Pagination
+          total={total}
+          pageSize={12}
+          onChange={(page, pageSize) => loadData(page, pageSize)}
+        />
       </div>
       {/* 模态框申请 */}
       <Modal
         title="周边申请"
         open={open}
         onOk={() => confirm()}
-        onCancel={() => setOpen(false)}
+        onCancel={() => {
+          setOpen(false);
+          form.resetFields(); // 清空表单的值
+        }}
         okText="确认"
         cancelText="取消"
       >
@@ -171,7 +197,6 @@ const Home: React.FC = () => {
           form={form}
           style={{ maxWidth: 600 }}
           initialValues={{ remember: true }}
-          onFinish={(values) => handleApply(values.content)}
           autoComplete="off"
         >
           <Form.Item
@@ -180,6 +205,13 @@ const Home: React.FC = () => {
             rules={[{ required: true, message: '请填写申请内容' }]}
           >
             <Input.TextArea />
+          </Form.Item>
+          <Form.Item
+            label="申请数量"
+            name="applyNums"
+            rules={[{ required: true, message: '请填写申请数量' }]}
+          >
+            <InputNumber min={1} />
           </Form.Item>
         </Form>
       </Modal>

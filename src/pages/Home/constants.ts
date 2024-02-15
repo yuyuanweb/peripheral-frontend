@@ -1,4 +1,4 @@
-export const buttonNames = [
+export const initialButtonNames = [
   '全部',
   '钥匙扣',
   '搪瓷杯',

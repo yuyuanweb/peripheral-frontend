@@ -4,6 +4,7 @@ declare namespace API {
     applicantId?: number;
     applicantUserName?: string;
     applicationTime?: string;
+    applyNums?: number;
     content?: string;
     createTime?: string;
     id?: number;
@@ -28,6 +29,7 @@ declare namespace API {
   };
 
   type ApplyRecordsApplyRequest = {
+    applyNums?: number;
     content?: string;
     peripheralId?: number;
   };
@@ -110,6 +112,12 @@ declare namespace API {
   type BaseResponseListProduct = {
     code?: number;
     data?: Product[];
+    message?: string;
+  };
+
+  type BaseResponseListstring = {
+    code?: number;
+    data?: string[];
     message?: string;
   };
 

@@ -21,6 +21,7 @@ const handleAdd = async (fields: API.PeripheralInfoAddRequest) => {
     // 处理 JSON 数据
     const formattedFields = {
       ...fields,
+
       permission: fields.permission
         ? JSON.stringify({
             publicView: fields.permission.publicView,

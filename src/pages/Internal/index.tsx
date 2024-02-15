@@ -44,6 +44,12 @@ const InternalPage: React.FC = () => {
       valueType: 'dateTime',
       hideInSearch: true,
       hideInForm: true,
+      sorter: (a, b) => {
+        let aTime = new Date(a.applicationTime).getTime();
+        let bTime = new Date(b.applicationTime).getTime();
+        console.log('a', a);
+        return aTime - bTime;
+      },
     },
     {
       title: '申请状态',
@@ -67,7 +73,7 @@ const InternalPage: React.FC = () => {
         },
       },
       renderFormItem: (_, record) => {
-        console.log(record, _, 'record');
+        // console.log(record, _, 'record');
 
         return (
           <Select

@@ -1,3 +1,4 @@
+import FileUploader from '@/components/FileUploader';
 import CreateModal from '@/pages/Admin/PeripheralInfo/components/CreateModal';
 import UpdateModal from '@/pages/Admin/PeripheralInfo/components/UpdateModal';
 import {
@@ -54,6 +55,12 @@ const UserAdminPage: React.FC = () => {
     }
   };
 
+  function fileUpload(url: string) {
+    // console.log(res);
+    // 上传接口
+    console.log('图片地址：', url);
+  }
+
   /**
    * 表格列配置
    */
@@ -78,6 +85,15 @@ const UserAdminPage: React.FC = () => {
         width: 64,
       },
       hideInSearch: true,
+      renderFormItem: (_, record) => {
+        console.log(_, record);
+
+        return (
+          <FileUploader onSuccess={fileUpload} biz={'user_avatar'}>
+            上传图片
+          </FileUploader>
+        );
+      },
     },
     {
       title: '价格(分）',
@@ -114,8 +130,8 @@ const UserAdminPage: React.FC = () => {
       dataIndex: 'permission',
       valueType: 'jsonCode',
       hideInSearch: true,
-      renderFormItem: (_, record) => {
-        console.log(record, _, 'permission');
+      renderFormItem: () => {
+        // console.log(record, _, 'permission');
         return (
           <ProForm.Group>
             <ProFormSwitch
@@ -148,8 +164,7 @@ const UserAdminPage: React.FC = () => {
         },
       },
       renderFormItem: (_, record) => {
-        console.log(record, _, 'record');
-
+        // console.log(record, _, 'record');
         return (
           <Select
             defaultValue={record.value}
@@ -174,6 +189,12 @@ const UserAdminPage: React.FC = () => {
       valueType: 'dateTime',
       hideInSearch: true,
       hideInForm: true,
+      sorter: (a, b) => {
+        let aTime = new Date(a.createTime).getTime();
+        let bTime = new Date(b.createTime).getTime();
+        console.log('a', a);
+        return aTime - bTime;
+      },
     },
     {
       title: '更新时间',
@@ -182,6 +203,12 @@ const UserAdminPage: React.FC = () => {
       valueType: 'dateTime',
       hideInSearch: true,
       hideInForm: true,
+      sorter: (a, b) => {
+        let aTime = new Date(a.updateTime).getTime();
+        let bTime = new Date(b.updateTime).getTime();
+        console.log('a', a);
+        return aTime - bTime;
+      },
     },
     {
       title: '操作',

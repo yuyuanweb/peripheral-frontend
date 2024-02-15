@@ -92,6 +92,14 @@ export async function listPeripheralInfoVoByPageUsingPost(
   });
 }
 
+/** listPeripheralInfoType GET /api/peripheralInfo/list/type */
+export async function listPeripheralInfoTypeUsingGet(options?: { [key: string]: any }) {
+  return request<API.BaseResponseListstring>('/api/peripheralInfo/list/type', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
 /** updatePeripheralInfo POST /api/peripheralInfo/update */
 export async function updatePeripheralInfoUsingPost(
   body: API.PeripheralInfoUpdateRequest,

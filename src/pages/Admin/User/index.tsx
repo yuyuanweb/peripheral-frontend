@@ -96,11 +96,17 @@ const UserAdminPage: React.FC = () => {
     },
     {
       title: '创建时间',
-      sorter: true,
       dataIndex: 'createTime',
       valueType: 'dateTime',
       hideInSearch: true,
       hideInForm: true,
+      //排序方法
+      sorter: (a, b) => {
+        let aTime = new Date(a.createTime).getTime();
+        let bTime = new Date(b.createTime).getTime();
+        console.log('a', a);
+        return aTime - bTime;
+      },
     },
     {
       title: '更新时间',
@@ -109,6 +115,12 @@ const UserAdminPage: React.FC = () => {
       valueType: 'dateTime',
       hideInSearch: true,
       hideInForm: true,
+      sorter: (a, b) => {
+        let aTime = new Date(a.updateTime).getTime();
+        let bTime = new Date(b.updateTime).getTime();
+        console.log('a', a);
+        return aTime - bTime;
+      },
     },
     {
       title: '操作',
