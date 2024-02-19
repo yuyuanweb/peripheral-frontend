@@ -100,13 +100,7 @@ const UserAdminPage: React.FC = () => {
       valueType: 'dateTime',
       hideInSearch: true,
       hideInForm: true,
-      //排序方法
-      sorter: (a, b) => {
-        let aTime = new Date(a.createTime).getTime();
-        let bTime = new Date(b.createTime).getTime();
-        console.log('a', a);
-        return aTime - bTime;
-      },
+      sorter: true,
     },
     {
       title: '更新时间',
@@ -115,12 +109,6 @@ const UserAdminPage: React.FC = () => {
       valueType: 'dateTime',
       hideInSearch: true,
       hideInForm: true,
-      sorter: (a, b) => {
-        let aTime = new Date(a.updateTime).getTime();
-        let bTime = new Date(b.updateTime).getTime();
-        console.log('a', a);
-        return aTime - bTime;
-      },
     },
     {
       title: '操作',
@@ -148,6 +136,9 @@ const UserAdminPage: React.FC = () => {
       <ProTable<API.User>
         headerTitle={'查询表格'}
         actionRef={actionRef}
+        // pagination={{
+        //   pageSize: 2,
+        // }}
         rowKey="key"
         search={{
           labelWidth: 120,
@@ -164,13 +155,26 @@ const UserAdminPage: React.FC = () => {
           </Button>,
         ]}
         request={async (params, sort, filter) => {
-          const sortField = Object.keys(sort)?.[0];
+          let sortField = Object.keys(sort)?.[0];
           const sortOrder = sort?.[sortField] ?? undefined;
+
+          const ascSortField: string | any[] = [];
+          const descSortField: string | any[] = [];
+          if (sortOrder === 'descend') {
+            descSortField.push(sortField);
+          } else if (sortOrder === 'ascend') {
+            ascSortField.push(sortField);
+          } else {
+            descSortField.push();
+            ascSortField.push();
+          }
 
           const { data, code } = await listUserByPageUsingPost({
             ...params,
-            sortField,
-            sortOrder,
+            // sortField,
+            // sortOrder,
+            descSortField,
+            ascSortField,
             ...filter,
           } as API.UserQueryRequest);
 

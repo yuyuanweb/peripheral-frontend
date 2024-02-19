@@ -163,17 +163,17 @@ const UserAdminPage: React.FC = () => {
       valueType: 'textarea',
     },
     {
+      title: '申请数量',
+      dataIndex: 'applyNums',
+      valueType: 'textarea',
+    },
+    {
       title: '申请时间',
       dataIndex: 'applicationTime',
       valueType: 'dateTime',
       hideInSearch: true,
       hideInForm: true,
-      sorter: (a, b) => {
-        let aTime = new Date(a.applicationTime).getTime();
-        let bTime = new Date(b.applicationTime).getTime();
-        console.log('a', a);
-        return aTime - bTime;
-      },
+      sorter: true,
     },
     {
       title: '申请状态',
@@ -219,6 +219,11 @@ const UserAdminPage: React.FC = () => {
           />
         );
       },
+    },
+    {
+      title: '审核反馈',
+      dataIndex: 'reason',
+      valueType: 'textarea',
     },
 
     {
@@ -289,16 +294,24 @@ const UserAdminPage: React.FC = () => {
         request={async (params, sort, filter) => {
           let sortField = Object.keys(sort)?.[0];
           const sortOrder = sort?.[sortField] ?? undefined;
+
+          const ascSortField: string | any[] = [];
+          const descSortField: string | any[] = [];
           if (sortOrder === 'descend') {
-            sortField = 'descSortField'; // 使用 descSortField
+            descSortField.push(sortField);
+          } else if (sortOrder === 'ascend') {
+            ascSortField.push(sortField);
           } else {
-            sortField = 'ascSortField'; // 使用 ascSortField
+            descSortField.push();
+            ascSortField.push();
           }
 
           const { data, code } = await listApplyRecordsByPageUsingPost({
             ...params,
-            sortField,
+            // sortField,
             // sortOrder,
+            descSortField,
+            ascSortField,
             ...filter,
           } as API.ApplyRecordsQueryRequest);
 

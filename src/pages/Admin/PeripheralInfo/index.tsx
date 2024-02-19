@@ -4,6 +4,7 @@ import UpdateModal from '@/pages/Admin/PeripheralInfo/components/UpdateModal';
 import {
   deletePeripheralInfoUsingPost,
   listPeripheralInfoByPageUsingPost,
+  listPeripheralInfoTypeUsingGet,
 } from '@/services/backend/peripheralInfoController';
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
@@ -15,8 +16,8 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import '@umijs/max';
-import { Button, message, Select, Space, Typography } from 'antd';
-import React, { useRef, useState } from 'react';
+import { Button, Form, InputNumber, message, Select, Space, Typography } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 
 /**
  * 周边管理页面
@@ -31,7 +32,8 @@ const UserAdminPage: React.FC = () => {
   const actionRef = useRef<ActionType>();
   // 当前用户点击的数据
   const [currentRow, setCurrentRow] = useState<API.PeripheralInfo>();
-
+  // 使用 useState 来保存分类数据
+  const [categories, setCategories] = useState([]);
   /**
    * 删除节点
    *
@@ -60,6 +62,16 @@ const UserAdminPage: React.FC = () => {
     // 上传接口
     console.log('图片地址：', url);
   }
+
+  // 使用 useEffect 处理异步操作
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const response = await listPeripheralInfoTypeUsingGet();
+      setCategories(response?.data || []);
+    };
+
+    fetchCategories();
+  }, []); // 第二个参数是空数组，表示只在组件挂载时执行
 
   /**
    * 表格列配置
@@ -99,17 +111,56 @@ const UserAdminPage: React.FC = () => {
       title: '价格(分）',
       dataIndex: 'price',
       valueType: 'text',
+      renderFormItem: () => {
+        return (
+          <Form.Item name="price">
+            <InputNumber min={1} type="number" />
+          </Form.Item>
+        );
+      },
     },
     {
       title: '库存',
       dataIndex: 'stock',
       valueType: 'text',
+      renderFormItem: () => {
+        return (
+          <Form.Item name="stock">
+            <InputNumber min={1} type="number" />
+          </Form.Item>
+        );
+      },
     },
     {
       title: '所属分类',
       dataIndex: 'type',
-      valueType: 'text',
       width: 100,
+      renderFormItem: () => {
+        return (
+          <Form.Item
+            name="type"
+            rules={[
+              {
+                required: true,
+                message: '至少填写 1 个标签',
+              },
+              {
+                max: 1,
+                type: 'array',
+                message: '至多选择 1 个标签',
+              },
+            ]}
+          >
+            <Select
+              mode="tags"
+              allowClear
+              options={categories.map((ele) => {
+                return { label: ele, value: ele };
+              })}
+            />
+          </Form.Item>
+        );
+      },
     },
     {
       title: '购买链接',
@@ -164,7 +215,6 @@ const UserAdminPage: React.FC = () => {
         },
       },
       renderFormItem: (_, record) => {
-        // console.log(record, _, 'record');
         return (
           <Select
             defaultValue={record.value}
@@ -189,12 +239,6 @@ const UserAdminPage: React.FC = () => {
       valueType: 'dateTime',
       hideInSearch: true,
       hideInForm: true,
-      sorter: (a, b) => {
-        let aTime = new Date(a.createTime).getTime();
-        let bTime = new Date(b.createTime).getTime();
-        console.log('a', a);
-        return aTime - bTime;
-      },
     },
     {
       title: '更新时间',
@@ -203,12 +247,6 @@ const UserAdminPage: React.FC = () => {
       valueType: 'dateTime',
       hideInSearch: true,
       hideInForm: true,
-      sorter: (a, b) => {
-        let aTime = new Date(a.updateTime).getTime();
-        let bTime = new Date(b.updateTime).getTime();
-        console.log('a', a);
-        return aTime - bTime;
-      },
     },
     {
       title: '操作',
@@ -252,13 +290,26 @@ const UserAdminPage: React.FC = () => {
           </Button>,
         ]}
         request={async (params, sort, filter) => {
-          const sortField = Object.keys(sort)?.[0];
+          let sortField = Object.keys(sort)?.[0];
           const sortOrder = sort?.[sortField] ?? undefined;
+
+          const ascSortField: string | any[] = [];
+          const descSortField: string | any[] = [];
+          if (sortOrder === 'descend') {
+            descSortField.push(sortField);
+          } else if (sortOrder === 'ascend') {
+            ascSortField.push(sortField);
+          } else {
+            descSortField.push();
+            ascSortField.push();
+          }
 
           const { data, code } = await listPeripheralInfoByPageUsingPost({
             ...params,
-            sortField,
-            sortOrder,
+            // sortField,
+            // sortOrder,
+            descSortField,
+            ascSortField,
             ...filter,
           } as API.PeripheralInfoQueryRequest);
 

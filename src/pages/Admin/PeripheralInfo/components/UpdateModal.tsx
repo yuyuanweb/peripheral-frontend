@@ -23,12 +23,12 @@ const handleUpdate = async (fields: API.PeripheralInfoUpdateRequest) => {
     // 处理 JSON 数据
     const formattedFields = {
       ...fields,
+      type: Array.isArray(fields.type) ? fields.type : [fields.type?.toString()],
       permission: JSON.stringify({
         publicView: fields.permission?.publicView || false,
         sensitiveFields: fields.permission?.sensitiveFields || [],
       }),
     };
-    // console.log(formattedFields.permission, '权限');
 
     await updatePeripheralInfoUsingPost(formattedFields);
     hide();

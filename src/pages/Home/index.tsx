@@ -20,14 +20,16 @@ const Home: React.FC = () => {
   // 当前点击tab
   const [curTab, setCurTab] = useState(0);
   const [open, setOpen] = useState(false);
+  const [tmpStock, setTmpStock] = useState(0);
   const [selectedId, setSelectedId] = useState(0);
-  // const [applyStatusMap, setApplyStatusMap] = useState({});
+
   const { initialState } = useModel('@@initialState');
   const [form] = Form.useForm();
 
   const [buttonNames, setButtonNames] = useState(initialButtonNames);
 
-  const handleApplyClick = (id: any) => {
+  const handleApplyClick = (id: any, stock: any) => {
+    setTmpStock(stock);
     setSelectedId(id);
     setOpen(true);
   };
@@ -70,13 +72,13 @@ const Home: React.FC = () => {
       const fetchedButtonNames = buttonNamesResponse?.data || [];
 
       // 更新按钮名称列表状态
-      setButtonNames(fetchedButtonNames);
+      setButtonNames(initialButtonNames.concat(fetchedButtonNames));
 
       // 调用接口获取数据
       const res = await listPeripheralInfoVoByPageUsingPost({
         current,
         pageSize,
-        type: curTab === 0 ? '' : buttonNames[curTab],
+        type: curTab === 0 ? [] : [buttonNames[curTab]],
       });
       // 将请求返回的数据设置到列表数据状态中
       setList(res?.data?.records ?? []);
@@ -93,7 +95,9 @@ const Home: React.FC = () => {
 
   function confirm() {
     const content = form.getFieldValue('content');
-    const applyNums = form.getFieldValue('applyNums');
+    const applyNums = form.getFieldValue('applyNums') || 1;
+    console.log(content, applyNums);
+
     setOpen(false);
     if (!content) {
       message.error('请输入审批意见');
@@ -150,7 +154,7 @@ const Home: React.FC = () => {
                         <span className="text-lg text-red-500">{'¥' + item.price / 100}</span>
                       </p>
                     )}
-                    {item.stock ? (
+                    {(item.stock || 0) > 0 ? (
                       <p className="text-gray-400 text-[13px]">剩余库存：{item.stock} 件</p>
                     ) : (
                       ''
@@ -160,13 +164,13 @@ const Home: React.FC = () => {
                     (initialState.currentUser.userRole === 'internal' ||
                       initialState.currentUser.userRole === 'admin') && (
                       <button
-                        onClick={() => handleApplyClick(item.id)}
+                        onClick={() => handleApplyClick(item.id, item.stock)}
                         type="button"
                         className={`p-2 select-none border-none cursor-pointer hover:opacity-80 text-white w-full ${
-                          item.stock === 0 ? 'bg-gray-500 pointer-events-none' : 'bg-blue-500'
+                          (item.stock || 0) <= 0 ? 'bg-gray-500 pointer-events-none' : 'bg-blue-500'
                         }`}
                       >
-                        {item.stock === 0 ? '当前周边库存为空' : '申请周边'}
+                        {(item.stock || 0) <= 0 ? '当前周边库存为空' : '申请周边'}
                       </button>
                     )}
                 </div>
@@ -211,7 +215,7 @@ const Home: React.FC = () => {
             name="applyNums"
             rules={[{ required: true, message: '请填写申请数量' }]}
           >
-            <InputNumber min={1} />
+            <InputNumber min={1} defaultValue={1} type="number" max={tmpStock} />
           </Form.Item>
         </Form>
       </Modal>

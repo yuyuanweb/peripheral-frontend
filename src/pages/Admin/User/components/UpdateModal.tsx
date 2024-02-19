@@ -64,6 +64,7 @@ const UpdateModal: React.FC<Props> = (props) => {
             ...values,
             id: oldData.id as any,
           });
+
           if (success) {
             onSubmit?.(values);
           }

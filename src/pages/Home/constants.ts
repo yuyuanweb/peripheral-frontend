@@ -1,16 +1,1 @@
-export const initialButtonNames = [
-  '全部',
-  '钥匙扣',
-  '搪瓷杯',
-  'T恤',
-  '手机支架',
-  '包',
-  '水杯',
-  '茶缸',
-  '抱枕',
-  '立牌',
-  '手机壳',
-  '鼠标垫',
-  '公仔',
-  '技术书籍',
-];
+export const initialButtonNames = ['全部'];
