@@ -51,7 +51,7 @@ const FileUploader: React.FC<Props> = (props) => {
       );
       fileObj.onSuccess(res.data);
       onSuccess?.(res.data || '');
-      onChange(res.data);
+      onChange?.(res.data || '');
     } catch (e: any) {
       commonErrorTip('上传失败，', e);
       fileObj.onError(e);

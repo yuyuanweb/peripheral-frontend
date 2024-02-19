@@ -33,7 +33,8 @@ const UserAdminPage: React.FC = () => {
   // 当前用户点击的数据
   const [currentRow, setCurrentRow] = useState<API.PeripheralInfo>();
   // 使用 useState 来保存分类数据
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<string[]>([]);
+
   /**
    * 删除节点
    *
@@ -58,8 +59,6 @@ const UserAdminPage: React.FC = () => {
   };
 
   function fileUpload(url: string) {
-    // console.log(res);
-    // 上传接口
     console.log('图片地址：', url);
   }
 
@@ -135,30 +134,17 @@ const UserAdminPage: React.FC = () => {
       title: '所属分类',
       dataIndex: 'type',
       width: 100,
-      renderFormItem: () => {
+      renderFormItem: (record) => {
         return (
-          <Form.Item
-            name="type"
-            rules={[
-              {
-                required: true,
-                message: '至少填写 1 个标签',
-              },
-              {
-                max: 1,
-                type: 'array',
-                message: '至多选择 1 个标签',
-              },
-            ]}
-          >
-            <Select
-              mode="tags"
-              allowClear
-              options={categories.map((ele) => {
-                return { label: ele, value: ele };
-              })}
-            />
-          </Form.Item>
+          <Select
+            defaultValue={record.type}
+            mode="tags"
+            allowClear
+            options={categories.map((ele) => {
+              return { label: ele, value: ele };
+            })}
+            maxCount={1}
+          />
         );
       },
     },

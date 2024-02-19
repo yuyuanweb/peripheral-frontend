@@ -29,6 +29,11 @@ const InternalPage: React.FC = () => {
       valueType: 'text',
     },
     {
+      title: '申请数量',
+      dataIndex: 'applyNums',
+      valueType: 'text',
+    },
+    {
       title: '申请理由',
       dataIndex: 'content',
       valueType: 'textarea',
@@ -108,15 +113,11 @@ const InternalPage: React.FC = () => {
         search={false} // 禁用搜索栏
         actionRef={actionRef}
         rowKey="key"
-        request={async (params, sort, filter) => {
-          const sortField = Object.keys(sort)?.[0];
-          const sortOrder = sort?.[sortField] ?? undefined;
+        request={async () => {
           const { data, code } = await getApplyRecordsUsingGet();
-
           return {
             success: code === 0,
             data: data || [],
-            // total: Number(data?.total) || 0,
           };
         }}
         columns={columns}
