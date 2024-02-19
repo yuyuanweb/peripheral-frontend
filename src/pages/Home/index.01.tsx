@@ -129,7 +129,7 @@ const Home: React.FC = () => {
         </div>
       </div>
       {/* 渲染内容 */}
-      <div className="grid py-5 gap-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4 mt-2">
+      <div className="grid py-5 gap-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 mt-2">
         {loading
           ? new Array(8)
               .fill(1)
@@ -137,12 +137,13 @@ const Home: React.FC = () => {
                 <Skeleton className=" bg-white p-5 rounded-xl" active key={index} />
               ))
           : list.map((item) => (
-              <div key={item.id} className="shadow-md m-2 bg-white rounded-md overflow-hidden flex flex-col">
+              <div key={item.id} className="shadow-md m-2 bg-white rounded-md overflow-hidden flex">
                 <img
                   draggable="false"
                   src={item.cover}
                   alt={item.name}
-                  className="hover:opacity-80 cursor-pointer h-72 object-cover"
+                  style={{ borderRight: '1px solid #eee' }}
+                  className="hover:opacity-80 cursor-pointer w-44 h-44 xl:w-52 xl:h-52 object-cover"
                 />
                 <div className="desc w-full flex-1 flex flex-col justify-between">
                   <div className="flex justify-between flex-col p-3">
@@ -150,9 +151,7 @@ const Home: React.FC = () => {
                     {item.price !== null && (
                       <p className="price ">
                         {/* <span className="text-gray-400 text-sm">周边价格：</span>{' '} */}
-                        <span className="text-lg text-red-500">
-                          {'¥' + (item.price || 0) / 100}
-                        </span>
+                        <span className="text-lg text-red-500">{'¥' + item.price / 100}</span>
                       </p>
                     )}
                     {(item.stock || 0) > 0 ? (
