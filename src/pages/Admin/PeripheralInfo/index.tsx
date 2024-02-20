@@ -34,7 +34,6 @@ const UserAdminPage: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.PeripheralInfo>();
   // 使用 useState 来保存分类数据
   const [categories, setCategories] = useState<string[]>([]);
-
   /**
    * 删除节点
    *
@@ -59,6 +58,8 @@ const UserAdminPage: React.FC = () => {
   };
 
   function fileUpload(url: string) {
+    // console.log(res);
+    // 上传接口
     console.log('图片地址：', url);
   }
 
@@ -134,10 +135,9 @@ const UserAdminPage: React.FC = () => {
       title: '所属分类',
       dataIndex: 'type',
       width: 100,
-      renderFormItem: (record) => {
+      renderFormItem: () => {
         return (
           <Select
-            defaultValue={record.type}
             mode="tags"
             allowClear
             options={categories.map((ele) => {
@@ -168,7 +168,6 @@ const UserAdminPage: React.FC = () => {
       valueType: 'jsonCode',
       hideInSearch: true,
       renderFormItem: () => {
-        // console.log(record, _, 'permission');
         return (
           <ProForm.Group>
             <ProFormSwitch

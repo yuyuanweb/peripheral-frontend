@@ -4,7 +4,7 @@ import {
   listPeripheralInfoVoByPageUsingPost,
 } from '@/services/backend/peripheralInfoController';
 import { useModel } from '@umijs/max';
-import { Form, Input, InputNumber, message, Modal, Pagination, Skeleton } from 'antd';
+import { Form, Input, InputNumber, message, Modal, Pagination, Skeleton, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { initialButtonNames } from './constants';
 import './index.less';
@@ -141,10 +141,7 @@ const Home: React.FC = () => {
                 <Skeleton className=" bg-white p-5 rounded-xl" active key={index} />
               ))
           : list.map((item) => (
-              <div
-                key={item.id}
-                className=" m-2 bg-white rounded-md overflow-hidden flex flex-col"
-              >
+              <div key={item.id} className=" m-2 bg-white rounded-md overflow-hidden flex flex-col">
                 <img
                   draggable="false"
                   src={item.cover}
@@ -154,7 +151,8 @@ const Home: React.FC = () => {
                 />
                 <div className="desc w-full flex-1 flex flex-col justify-between">
                   <div className="flex justify-between flex-col p-3">
-                    <p>{item.name}</p>
+                    <Typography.Text ellipsis={{ rows: 1 }}>{item.name}</Typography.Text>
+
                     {item.price !== null ? (
                       <p className="price">
                         <span className="text-lg text-red-500">
@@ -180,7 +178,7 @@ const Home: React.FC = () => {
                           (item.stock || 0) <= 0 ? 'bg-gray-500 pointer-events-none' : 'bg-blue-500'
                         }`}
                       >
-                        {(item.stock || 0) <= 0 ? '当前周边库存为空' : '申请周边'}
+                        {(item.stock || 0) <= 0 ? '库存为空' : '申请周边'}
                       </button>
                     )}
                 </div>

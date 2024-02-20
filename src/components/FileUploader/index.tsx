@@ -15,9 +15,11 @@ function beforeUpload(file: File) {
   return isLt10M;
 }
 
+// 规定组件接收的属性
 interface Props {
   biz: string;
   onChange?: (value: string) => void;
+  // 回调函数
   onSuccess: (res: string) => void;
   value?: string;
 }

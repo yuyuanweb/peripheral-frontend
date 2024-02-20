@@ -560,7 +560,7 @@ declare namespace API {
     replenishLink?: string;
     status?: number;
     stock?: number;
-    type?: string;
+    type?: string[];
   };
 
   type PeripheralInfoQueryRequest = {
@@ -573,7 +573,7 @@ declare namespace API {
     price?: number;
     status?: number;
     stock?: number;
-    type?: string;
+    type?: string[];
     userId?: number;
   };
 
@@ -587,7 +587,7 @@ declare namespace API {
     replenishLink?: string;
     status?: number;
     stock?: number;
-    type?: string;
+    type?: string[];
   };
 
   type PeripheralInfoVO = {
