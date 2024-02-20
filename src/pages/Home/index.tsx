@@ -106,6 +106,10 @@ const Home: React.FC = () => {
     handleApply(content, applyNums);
   }
 
+  function jumpExternalLink(link: string) {
+    window.open(link);
+  }
+
   useEffect(() => {
     // 当curTab发生变化时，才重新执行加载数据的函数
     loadData();
@@ -137,28 +141,33 @@ const Home: React.FC = () => {
                 <Skeleton className=" bg-white p-5 rounded-xl" active key={index} />
               ))
           : list.map((item) => (
-              <div key={item.id} className="shadow-md m-2 bg-white rounded-md overflow-hidden flex flex-col">
+              <div
+                key={item.id}
+                className=" m-2 bg-white rounded-md overflow-hidden flex flex-col"
+              >
                 <img
                   draggable="false"
                   src={item.cover}
                   alt={item.name}
-                  className="hover:opacity-80 cursor-pointer h-72 object-cover"
+                  className="hover:opacity-80 cursor-pointer h-72 w-full object-cover"
+                  onClick={() => jumpExternalLink(item.purchaseLink || 'https://code-nav.cn')}
                 />
                 <div className="desc w-full flex-1 flex flex-col justify-between">
                   <div className="flex justify-between flex-col p-3">
                     <p>{item.name}</p>
-                    {item.price !== null && (
-                      <p className="price ">
-                        {/* <span className="text-gray-400 text-sm">周边价格：</span>{' '} */}
+                    {item.price !== null ? (
+                      <p className="price">
                         <span className="text-lg text-red-500">
                           {'¥' + (item.price || 0) / 100}
                         </span>
                       </p>
+                    ) : (
+                      <p className="price text-lg">&nbsp;</p>
                     )}
                     {(item.stock || 0) > 0 ? (
                       <p className="text-gray-400 text-[13px]">剩余库存：{item.stock} 件</p>
                     ) : (
-                      ''
+                      <p className="text-[13px]">&nbsp;</p>
                     )}
                   </div>
                   {initialState?.currentUser &&
